@@ -1,6 +1,8 @@
 #include "ScoringSystem.h"
 
 #include "RunSession.h"
+#include "ShopSystem.h"
+
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -10,6 +12,13 @@
 
 RunSession::RunSession() : currentRound(1) {
     std::srand(std::time(nullptr));
+}
+
+RunSession::~RunSession() {
+    for (IModifier* mod : activeModifier) {
+        delete mod;
+    }
+    activeModifier.clear();
 }
 
 void RunSession::Start() {
@@ -23,7 +32,22 @@ void RunSession::Start() {
 
 
         PlayHand();
-        CalculateScore();
+
+        int roundScore = CalculateScore();
+
+        if (roundScore < targetScore) {
+            std::cout << "=================================" << std::endl;
+            std::cout << " [GAME OVER] You failed to beat the Blind! " << std::endl;
+            std::cout << " Score: " << roundScore << " / " << targetScore << std::endl;
+            std::cout << "=================================\n" << std::endl;
+            break; 
+        } else {
+            std::cout << "=================================" << std::endl;
+            std::cout << " [SUCCESS] Blind Defeated! " << std::endl;
+            std::cout << " Score: " << roundScore << " / " << targetScore << std::endl;
+            std::cout << "=================================\n" << std::endl;
+        }
+
         Shop();
 
         std::cout << "\nEnd of round " << currentRound << std::endl;
@@ -67,7 +91,7 @@ void RunSession::PlayHand() {
     }
     std::cout << "\n\n";
 
-    playedCards.clear(); // Bersihkan kartu dari ronde sebelumnya
+    playedCards.clear();
     std::cout << "Select 5 cards to play (enter numbers 1-8 separated by space, e.g., 1 3 4 5 8): ";
 
     std::string input;
@@ -88,8 +112,8 @@ void RunSession::PlayHand() {
     std::cout << "\n" << std::endl;
 }
 
-void RunSession::CalculateScore() {
-    std::cout << "Calculate Score" << std::endl;
+int RunSession::CalculateScore() {
+std::cout << "Calculate Score" << std::endl;
     
     ScoringSystem scorer;
     int currentChips = 0;
@@ -97,12 +121,31 @@ void RunSession::CalculateScore() {
 
     scorer.CalculateBaseScore(playedCards, currentChips, currentMult);
 
+    if (!activeModifier.empty()) {
+        std::cout << "\n--- Applying Modifiers ---" << std::endl;
+        for (IModifier* mod : activeModifier) {
+            std::cout << "Applying: " << mod->GetName() << std::endl;
+            mod->Apply(currentChips, currentMult);
+            std::cout << "   -> Current Chips: " << currentChips << " | Current Mult: " << currentMult << std::endl;
+        }
+    }
+
     int totalScore = currentChips * currentMult;
-    std::cout << "TOTAL SCORE: " << totalScore << "\n" << std::endl;
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "FINAL TOTAL SCORE: " << totalScore << "\n" << std::endl;
+
+    return totalScore;
 }
 
+    
+
 void RunSession::Shop() {
-    std::cout << "Enter Shop" << std::endl;
+    ShopSystem shop;
+    IModifier* newModifier = shop.OpenShop();
+    
+    if (newModifier != nullptr) {
+        activeModifier.push_back(newModifier);
+    }
 }
 
 void RunSession::EndRun() {
