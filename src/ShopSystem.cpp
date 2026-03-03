@@ -8,6 +8,7 @@ IModifier* ShopSystem::OpenShop() {
     std::cout << "Available Modifiers:" << std::endl;
     std::cout << "1. Flat Bonus (+20 Chips)" << std::endl;
     std::cout << "2. Double Score (x2 Mult)" << std::endl;
+    std::cout << "3. Square Score" << std::endl;
     std::cout << "0. Skip Shop" << std::endl;
     
     std::cout << "Enter your choice (0-2): ";
@@ -20,7 +21,10 @@ IModifier* ShopSystem::OpenShop() {
     } else if (choice == "2") {
         std::cout << "[Shop] You bought Double Score!\n" << std::endl;
         return ModifierFactory::CreateModifier("DoubleScore");
-    }
+    }  else if (choice == "3") {
+        std::cout << "[Shop] You bought Square Score!\n" << std::endl;
+        return ModifierFactory::CreateModifier("SquareScore");
+    } 
 
     std::cout << "[Shop] You skipped the shop.\n" << std::endl;
     return nullptr;

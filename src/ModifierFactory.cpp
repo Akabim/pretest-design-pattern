@@ -1,13 +1,21 @@
 #include "ModifierFactory.h"
 #include "modifiers/FlatBonusModifier.h"
 #include "modifiers/DoubleScoreModifier.h"
-IModifier* ModifierFactory::CreateModifier(const std::string& type) {
-    if (type == "FlatBonus") {
+#include "modifiers/SquareScoreModifier.h"
+IModifier *ModifierFactory::CreateModifier(const std::string &type)
+{
+    if (type == "FlatBonus")
+    {
         return new FlatBonusModifier();
-    } 
-    else if (type == "DoubleScore") {
+    }
+    else if (type == "DoubleScore")
+    {
         return new DoubleScoreModifier();
     }
-    
-    return nullptr; 
+    else if (type == "SquareScore")
+    {
+        return new SquareScoreModifier();
+    }
+
+    return nullptr;
 }
