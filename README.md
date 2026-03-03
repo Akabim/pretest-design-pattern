@@ -226,7 +226,4 @@ Proyek ini dikembangkan dengan bantuan **GitHub Copilot** untuk:
 - Membantu penulisan dokumentasi (`README.md`)
 - Memberikan saran struktur kode
 - Membantu debugging
-
-Semua kode dipahami dan dapat dijelaskan oleh pembuat.
-
 ---
